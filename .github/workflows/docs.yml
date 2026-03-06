@@ -1,30 +1,35 @@
-# Name des Workflows
-name: Metis CI
+name: Metis Documentation
 
-# Auslöser: Bei jedem Push oder Pull Request in den Hauptzweig
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+      - '**.md'
+      - '**.py'
+      - 'infra/**'
 
 jobs:
-  build:
+  generate-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-    - name: Lint with flake8
-      run: |
-        # Prüft den Code auf Einhaltung von Stilrichtlinien (PEP8)
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Generate Project Structure
+        run: |
+          echo "# Metis Project Structure" > docs/structure.md
+          echo "Generated on: $(date)" >> docs/structure.md
+          echo "\`\`\`text" >> docs/structure.md
+          tree -L 3 >> docs/structure.md
+          echo "\`\`\`" >> docs/structure.md
+
+      - name: Auto-Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update automated project documentation"
+          file_pattern: 'docs/*.md'

@@ -1,0 +1,46 @@
+# =========================
+# Metis - Ultra Secure Ignore
+# =========================
+
+# 1. OS & Systemdateien
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# 2. Python & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# 3. Security & Secrets (Die absolute rote Linie)
+# Keine Umgebungsvariablen pushen
+.env
+.env.local
+.env.*
+
+# Keine TLS-Zertifikate oder Schlüssel pushen
+*.key
+*.crt
+*.pem
+*.csr
+
+# Mosquitto spezifische sensible Daten
+infra/mosquitto/config/passwd
+infra/mosquitto/data/
+
+# 4. IDEs & Editoren
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 5. Eigene Logs & Dumps
+*.log
+docs/local_testing/
