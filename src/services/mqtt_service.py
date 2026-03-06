@@ -7,10 +7,21 @@ class MQTTService:
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
         self.client.username_pw_set(Config.MQTT_USER, Config.MQTT_PASSWORD)
         
-        self.client.tls_set(
-            ca_certs=Config.CA_CERTS_PATH,
-            tls_version=ssl.PROTOCOL_TLSv1_3
-        )
+        # 1. SSL Context für Clients erstellen
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        
+        # 2. Unser eigenes Zertifikat laden
+        context.load_verify_locations(cafile=Config.CA_CERTS_PATH)
+        
+        # 3. Strikt auf TLS 1.3 zwingen
+        context.minimum_version = ssl.TLSVersion.TLSv1_3
+        
+        # 4. Hostname-Check deaktivieren (verhindert Fehler, wenn das 
+        # Zertifikat auf die IP statt auf 'localhost' ausgestellt ist)
+        context.check_hostname = False
+        
+        # Den Context an den Paho-Client übergeben
+        self.client.tls_set_context(context)
         
         self.client.on_connect = self._on_connect
         self.client.on_publish = self._on_publish
@@ -22,7 +33,7 @@ class MQTTService:
             print(f"[Metis Network] Verbindungsfehler. Code: {reason_code}")
 
     def _on_publish(self, client, userdata, mid, reason_code, properties):
-        pass # Stilles Logging, um die Konsole nicht zu spammen
+        pass
 
     def connect_and_start(self):
         try:
