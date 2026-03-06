@@ -1,0 +1,8 @@
+# Metis Core darf alles
+user metis_admin
+topic readwrite #
+
+# Node: Licht (Beispiel für später)
+user node_light
+topic read metis/light/command
+topic write metis/light/status
