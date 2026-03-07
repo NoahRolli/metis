@@ -44,3 +44,9 @@ infra/mosquitto/data/
 # 5. Eigene Logs & Dumps
 *.log
 docs/local_testing/
+
+# Security: Ignoriere Zertifikate und generierte Passwörter
+infra/mosquitto/certs/*.key
+infra/mosquitto/certs/*.crt
+infra/mosquitto/certs/*.csr
+infra/mosquitto/config/passwd
